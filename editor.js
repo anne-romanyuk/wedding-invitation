@@ -1167,7 +1167,18 @@ async function inlineImageAssets(root) {
   }));
 }
 
-async function buildStandaloneDocument() {
+function pointImageAssetsToServer(root) {
+  root.querySelectorAll("img[src]").forEach((image) => {
+    const source = image.getAttribute("src");
+    if (!source || source.startsWith("data:") || source.startsWith("blob:")) return;
+    const assetUrl = new URL(source, previewDocument.baseURI);
+    image.src = assetUrl.origin === location.origin
+      ? `${assetUrl.pathname}${assetUrl.search}`
+      : assetUrl.href;
+  });
+}
+
+async function buildStandaloneDocument({ inlineImages = true } = {}) {
   const root = previewDocument.documentElement.cloneNode(true);
   root.classList.remove("motion-ready");
   root.querySelector("#wedding-editor-runtime")?.remove();
@@ -1178,7 +1189,8 @@ async function buildStandaloneDocument() {
   normalizeAddedVisuals(root);
   root.querySelectorAll(".reveal.in, .deco.in").forEach((element) => element.classList.remove("in"));
 
-  await inlineImageAssets(root);
+  if (inlineImages) await inlineImageAssets(root);
+  else pointImageAssetsToServer(root);
 
   const audio = root.querySelector("#weddingAudio");
   if (audio?.dataset.musicStored) {
@@ -1210,6 +1222,58 @@ async function copyText(value) {
   input.remove();
 }
 
+async function readApiResult(response, fallbackMessage) {
+  const result = await response.json().catch(() => ({}));
+  if (response.status === 401) {
+    window.location.href = `/login.html?returnTo=${encodeURIComponent("/editor.html")}`;
+    throw new Error("Требуется повторный вход");
+  }
+  if (response.status === 413) {
+    throw new Error("Сервер отклонил слишком большую часть файла. Обновите серверную версию проекта");
+  }
+  if (!response.ok) throw new Error(result.error || fallbackMessage);
+  return result;
+}
+
+async function uploadInvitationVersion(title, html, onProgress) {
+  const chunkSize = 512 * 1024;
+  const documentBytes = new TextEncoder().encode(html);
+  const totalChunks = Math.ceil(documentBytes.byteLength / chunkSize);
+  let uploadId = null;
+
+  try {
+    const startResponse = await fetch("/api/admin/invitations/uploads", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ title, totalBytes: documentBytes.byteLength, totalChunks })
+    });
+    const started = await readApiResult(startResponse, "Не удалось начать загрузку версии");
+    uploadId = started.uploadId;
+
+    for (let index = 0; index < totalChunks; index += 1) {
+      const start = index * chunkSize;
+      const end = Math.min(start + chunkSize, documentBytes.byteLength);
+      onProgress?.(index + 1, totalChunks);
+      const chunkResponse = await fetch(`/api/admin/invitations/uploads/${uploadId}/chunks/${index}`, {
+        method: "PUT",
+        headers: { "content-type": "application/octet-stream" },
+        body: documentBytes.slice(start, end)
+      });
+      await readApiResult(chunkResponse, `Не удалось загрузить часть ${index + 1}`);
+    }
+
+    const completeResponse = await fetch(`/api/admin/invitations/uploads/${uploadId}/complete`, {
+      method: "POST"
+    });
+    return await readApiResult(completeResponse, "Не удалось собрать опубликованную версию");
+  } catch (error) {
+    if (uploadId) {
+      fetch(`/api/admin/invitations/uploads/${uploadId}`, { method: "DELETE" }).catch(() => {});
+    }
+    throw error;
+  }
+}
+
 async function publishVersion() {
   if (!previewDocument) return;
   saveSnapshot({ notify: false });
@@ -1221,21 +1285,15 @@ async function publishVersion() {
   saveStatus.textContent = "Подготавливаю онлайн-версию";
 
   try {
-    const html = await buildStandaloneDocument();
-    const response = await fetch("/api/admin/invitations", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        title: versionTitle.value.trim() || defaultVersionTitle(),
-        html
-      })
-    });
-    const result = await response.json().catch(() => ({}));
-    if (response.status === 401) {
-      window.location.href = `/login.html?returnTo=${encodeURIComponent("/editor.html")}`;
-      return;
-    }
-    if (!response.ok) throw new Error(result.error || "Не удалось создать версию");
+    const html = await buildStandaloneDocument({ inlineImages: false });
+    const result = await uploadInvitationVersion(
+      versionTitle.value.trim() || defaultVersionTitle(),
+      html,
+      (current, total) => {
+        publishButton.textContent = `Загружаю ${current} из ${total}…`;
+        saveStatus.textContent = `Загрузка онлайн-версии: ${current} из ${total}`;
+      }
+    );
 
     publishedUrl.value = result.invitation.url;
     openPublishedUrl.href = result.invitation.url;
@@ -1278,7 +1336,7 @@ async function exportHtml() {
   exportButton.textContent = "Готовлю файл…";
 
   try {
-    downloadHtml(await buildStandaloneDocument(), "wedding-invitation-phone.html");
+    downloadHtml(await buildStandaloneDocument({ inlineImages: true }), "wedding-invitation-phone.html");
     showToast("Готовый файл для телефона скачан");
   } catch (error) {
     console.error(error);

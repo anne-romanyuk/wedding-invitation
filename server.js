@@ -1,12 +1,13 @@
 import http from "node:http";
 import { createHmac, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
-import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rename, rm, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT_DIR = path.dirname(fileURLToPath(import.meta.url));
 const DATA_DIR = path.resolve(process.env.WEDDING_DATA_DIR || path.join(ROOT_DIR, "data"));
 const VERSION_DIR = path.join(DATA_DIR, "versions");
+const UPLOAD_DIR = path.join(DATA_DIR, "uploads");
 const INVITATIONS_FILE = path.join(DATA_DIR, "invitations.json");
 const RESPONSES_FILE = path.join(DATA_DIR, "responses.json");
 const PORT = Number(process.env.PORT || 4173);
@@ -19,6 +20,8 @@ const SESSION_COOKIE = "wedding_admin";
 const SESSION_TTL_SECONDS = 60 * 60 * 24 * 14;
 const MAX_VERSION_BYTES = 80 * 1024 * 1024;
 const MAX_RESPONSE_BYTES = 256 * 1024;
+const MAX_UPLOAD_CHUNK_BYTES = 768 * 1024;
+const MAX_UPLOAD_CHUNKS = 512;
 
 const MIME_TYPES = {
   ".css": "text/css; charset=utf-8",
@@ -46,7 +49,10 @@ function withDataLock(task) {
 }
 
 async function ensureDataFiles() {
-  await mkdir(VERSION_DIR, { recursive: true });
+  await Promise.all([
+    mkdir(VERSION_DIR, { recursive: true }),
+    mkdir(UPLOAD_DIR, { recursive: true })
+  ]);
   await Promise.all([
     ensureJsonFile(INVITATIONS_FILE, { invitations: [] }),
     ensureJsonFile(RESPONSES_FILE, { responses: [] })
@@ -99,7 +105,7 @@ function redirect(response, location) {
   response.end();
 }
 
-async function readJsonBody(request, limit) {
+async function readBodyBuffer(request, limit) {
   const chunks = [];
   let total = 0;
   for await (const chunk of request) {
@@ -111,9 +117,14 @@ async function readJsonBody(request, limit) {
     }
     chunks.push(chunk);
   }
-  if (!chunks.length) return {};
+  return Buffer.concat(chunks);
+}
+
+async function readJsonBody(request, limit) {
+  const body = await readBodyBuffer(request, limit);
+  if (!body.length) return {};
   try {
-    return JSON.parse(Buffer.concat(chunks).toString("utf8"));
+    return JSON.parse(body.toString("utf8"));
   } catch {
     const error = new Error("Некорректный JSON");
     error.statusCode = 400;
@@ -252,6 +263,98 @@ async function createInvitation(title, html, origin) {
     await writeJsonAtomic(INVITATIONS_FILE, data);
     return invitationView(record, 0, origin);
   });
+}
+
+function uploadDirectory(uploadId) {
+  if (!/^[0-9a-f-]{36}$/.test(uploadId)) {
+    const error = new Error("Некорректный идентификатор загрузки");
+    error.statusCode = 400;
+    throw error;
+  }
+  return path.join(UPLOAD_DIR, uploadId);
+}
+
+async function startInvitationUpload(title, totalBytes, totalChunks) {
+  const normalizedBytes = Number(totalBytes);
+  const normalizedChunks = Number(totalChunks);
+  if (!Number.isInteger(normalizedBytes) || normalizedBytes < 500 || normalizedBytes > MAX_VERSION_BYTES) {
+    const error = new Error("Недопустимый размер версии");
+    error.statusCode = normalizedBytes > MAX_VERSION_BYTES ? 413 : 400;
+    throw error;
+  }
+  if (!Number.isInteger(normalizedChunks) || normalizedChunks < 1 || normalizedChunks > MAX_UPLOAD_CHUNKS) {
+    const error = new Error("Недопустимое количество частей");
+    error.statusCode = 400;
+    throw error;
+  }
+
+  const uploadId = randomUUID();
+  const directory = uploadDirectory(uploadId);
+  await mkdir(directory, { recursive: false });
+  await writeJsonAtomic(path.join(directory, "meta.json"), {
+    uploadId,
+    title: cleanTitle(title),
+    totalBytes: normalizedBytes,
+    totalChunks: normalizedChunks,
+    createdAt: new Date().toISOString()
+  });
+  return { uploadId };
+}
+
+async function writeInvitationUploadChunk(uploadId, chunkIndex, chunk) {
+  const directory = uploadDirectory(uploadId);
+  const meta = await readJsonFile(path.join(directory, "meta.json"), null);
+  if (!meta) {
+    const error = new Error("Загрузка не найдена");
+    error.statusCode = 404;
+    throw error;
+  }
+  const index = Number(chunkIndex);
+  if (!Number.isInteger(index) || index < 0 || index >= meta.totalChunks) {
+    const error = new Error("Некорректный номер части");
+    error.statusCode = 400;
+    throw error;
+  }
+  if (!chunk.length || chunk.length > MAX_UPLOAD_CHUNK_BYTES) {
+    const error = new Error("Часть загрузки имеет недопустимый размер");
+    error.statusCode = chunk.length > MAX_UPLOAD_CHUNK_BYTES ? 413 : 400;
+    throw error;
+  }
+  await writeFile(path.join(directory, `${index}.part`), chunk);
+}
+
+async function completeInvitationUpload(uploadId, origin) {
+  const directory = uploadDirectory(uploadId);
+  const meta = await readJsonFile(path.join(directory, "meta.json"), null);
+  if (!meta) {
+    const error = new Error("Загрузка не найдена");
+    error.statusCode = 404;
+    throw error;
+  }
+
+  let chunks;
+  try {
+    chunks = await Promise.all(Array.from({ length: meta.totalChunks }, (_, index) => (
+      readFile(path.join(directory, `${index}.part`))
+    )));
+  } catch (error) {
+    if (error.code === "ENOENT") {
+      const missingChunk = new Error("Не все части версии были загружены");
+      missingChunk.statusCode = 400;
+      throw missingChunk;
+    }
+    throw error;
+  }
+
+  const documentBuffer = Buffer.concat(chunks);
+  if (documentBuffer.length !== meta.totalBytes) {
+    const error = new Error("Размер собранной версии не совпал");
+    error.statusCode = 400;
+    throw error;
+  }
+  const invitation = await createInvitation(meta.title, documentBuffer.toString("utf8"), origin);
+  await rm(directory, { recursive: true, force: true });
+  return invitation;
 }
 
 async function deleteInvitation(id) {
@@ -433,6 +536,34 @@ async function handleRequest(request, response) {
 
     if (method === "GET" && pathname === "/api/admin/invitations") {
       sendJson(response, 200, { invitations: await listInvitations(requestOrigin(request)) });
+      return;
+    }
+
+    if (method === "POST" && pathname === "/api/admin/invitations/uploads") {
+      const body = await readJsonBody(request, 32 * 1024);
+      sendJson(response, 201, await startInvitationUpload(body.title, body.totalBytes, body.totalChunks));
+      return;
+    }
+
+    const uploadChunkMatch = pathname.match(/^\/api\/admin\/invitations\/uploads\/([0-9a-f-]{36})\/chunks\/(\d+)$/);
+    if (method === "PUT" && uploadChunkMatch) {
+      const chunk = await readBodyBuffer(request, MAX_UPLOAD_CHUNK_BYTES);
+      await writeInvitationUploadChunk(uploadChunkMatch[1], uploadChunkMatch[2], chunk);
+      sendJson(response, 200, { ok: true });
+      return;
+    }
+
+    const completeUploadMatch = pathname.match(/^\/api\/admin\/invitations\/uploads\/([0-9a-f-]{36})\/complete$/);
+    if (method === "POST" && completeUploadMatch) {
+      const invitation = await completeInvitationUpload(completeUploadMatch[1], requestOrigin(request));
+      sendJson(response, 201, { invitation });
+      return;
+    }
+
+    const cancelUploadMatch = pathname.match(/^\/api\/admin\/invitations\/uploads\/([0-9a-f-]{36})$/);
+    if (method === "DELETE" && cancelUploadMatch) {
+      await rm(uploadDirectory(cancelUploadMatch[1]), { recursive: true, force: true });
+      sendJson(response, 200, { ok: true });
       return;
     }
 
