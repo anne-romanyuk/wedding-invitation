@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="ru" class=""><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#f2ead6">
+  <title>Приглашение на свадьбу</title>
+  <script>document.documentElement.classList.add("motion-ready");</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,300;1,400&amp;family=Great+Vibes&amp;family=Marck+Script&amp;display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --paper: #f2ead6;
+      --paper-light: #f8f1df;
+      --paper-deep: #e9dcc0;
+      --sage: #87917f;
+      --sage-deep: #586458;
+      --ink: #70766d;
+      --ink-soft: #92978f;
+      --light: #f7f6ef;
+      --light-soft: #e5e8dc;
+      --line: #cfd3c8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      background: var(--paper);
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      min-width: 320px;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Cormorant", Georgia, serif;
+      line-height: 1.5;
+      display: flex;
+      justify-content: center;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .site {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100vh;
+      position: relative;
+      overflow: hidden;
+      background: var(--paper);
+      isolation: isolate;
+    }
+
+    .site::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 92% 8%, rgba(255, 249, 232, .48), transparent 22rem),
+        radial-gradient(circle at 4% 48%, rgba(231, 216, 184, .2), transparent 24rem),
+        radial-gradient(circle at 90% 88%, rgba(255, 247, 225, .34), transparent 22rem);
+    }
+
+    section {
+      position: relative;
+      background: transparent;
+      overflow: hidden;
+    }
+
+    section > :not(.deco):not(.scroll-arrow),
+    footer {
+      position: relative;
+      z-index: 4;
+    }
+
+    h1,
+    h2 {
+      color: var(--ink);
+      font-weight: 300;
+      letter-spacing: .13em;
+      line-height: 1.12;
+    }
+
+    .deco {
+      position: absolute;
+      z-index: 1;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+      opacity: var(--deco-opacity, .92);
+      transform: translate3d(0, 0, 0) scale(1) rotate(var(--rotate, 0deg));
+      transform-origin: center;
+      transition:
+        opacity 1.25s ease var(--deco-delay, 0s),
+        transform 1.45s cubic-bezier(.18, .72, .18, 1) var(--deco-delay, 0s);
+    }
+
+    .motion-ready .deco {
+      opacity: 0;
+      transform: translate3d(var(--move-x, 0), var(--move-y, 24px), 0) scale(.94) rotate(var(--rotate, 0deg));
+    }
+
+    .motion-ready .deco.in {
+      opacity: var(--deco-opacity, .92);
+      transform: translate3d(0, 0, 0) scale(1) rotate(var(--rotate, 0deg));
+    }
+
+    .reveal {
+      opacity: var(--reveal-opacity, 1);
+      transform: none;
+      transition: opacity .9s ease, transform 1.05s cubic-bezier(.2, .75, .2, 1);
+    }
+
+    .motion-ready .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+
+    .motion-ready .reveal.in {
+      opacity: var(--reveal-opacity, 1);
+      transform: none;
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 100svh;
+      padding: 96px 28px 88px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .hero-big {
+      width: min(70vw, 320px);
+      top: -54px;
+      right: -118px;
+      --move-x: 28px;
+      --move-y: -16px;
+      --rotate: -7deg;
+      --deco-delay: .12s;
+      --deco-opacity: .9;
+    }
+
+    .hero-top-branch {
+      width: min(44vw, 200px);
+      top: 8px;
+      right: 58px;
+      --move-x: 14px;
+      --move-y: -18px;
+      --rotate: 16deg;
+      --deco-delay: .28s;
+      --deco-opacity: .6;
+    }
+
+    .hero-top-buds {
+      width: min(38vw, 176px);
+      top: 96px;
+      right: -74px;
+      --move-x: 22px;
+      --move-y: -10px;
+      --rotate: -34deg;
+      --deco-delay: .42s;
+      --deco-opacity: .64;
+    }
+
+    .hero-medium {
+      width: min(56vw, 260px);
+      bottom: -70px;
+      left: -94px;
+      --move-x: -24px;
+      --move-y: 20px;
+      --rotate: 18deg;
+      --deco-delay: .35s;
+      --deco-opacity: .84;
+    }
+
+    .hero-bottom-right {
+      width: min(48vw, 220px);
+      right: -82px;
+      bottom: -38px;
+      --move-x: 24px;
+      --move-y: 22px;
+      --rotate: -24deg;
+      --deco-delay: .52s;
+      --deco-opacity: .78;
+    }
+
+    .hero-title-group {
+      width: 100%;
+      padding: 36px 0 32px;
+      isolation: isolate;
+    }
+
+    .hero-brush {
+      position: absolute;
+      z-index: -1;
+      top: 50%;
+      left: 50%;
+      width: min(138vw, 590px);
+      max-width: none;
+      height: auto;
+      pointer-events: none;
+      user-select: none;
+      opacity: .46;
+      filter: blur(3.5px);
+      transform: translate(-50%, -46%) rotate(-1.5deg);
+      animation: brush-reveal 2.2s cubic-bezier(.22, .61, .36, 1) .3s both;
+    }
+
+    @keyframes brush-reveal {
+      0% {
+        opacity: 0;
+        filter: blur(9px);
+        transform: translate(-50%, -44%) scale(.96) rotate(-1.5deg);
+      }
+      100% {
+        opacity: var(--brush-opacity, .46);
+        filter: blur(3.5px);
+        transform: translate(-50%, -46%) scale(1) rotate(-1.5deg);
+      }
+    }
+
+    .hero-names {
+      font-size: clamp(48px, 15vw, 70px);
+      color: #505a50;
+      letter-spacing: .08em;
+      text-shadow:
+        0 1px 0 rgba(255, 255, 255, .45),
+        0 0 8px rgba(242, 234, 214, .28);
+    }
+
+    .hero-names .amp {
+      display: inline-block;
+      margin: 0 .1em;
+      color: #5f6a5d;
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    .hero-date {
+      margin-top: 18px;
+      color: #505a50;
+      font-size: 32px;
+      font-weight: 300;
+      letter-spacing: .2em;
+    }
+
+    .hero .hero-names {
+      transition-delay: .22s;
+    }
+
+    .hero .hero-date {
+      transition-delay: .42s;
+    }
+
+    .music {
+      width: 112px;
+      height: 112px;
+      margin-top: 42px;
+      border: 0;
+      background: transparent;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .music:focus-visible {
+      outline: 2px solid var(--sage);
+      outline-offset: 4px;
+      border-radius: 50%;
+    }
+
+    .music .ring {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      animation: spin 22s linear infinite;
+    }
+
+    .music .disc {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: var(--sage-deep);
+      box-shadow: 0 10px 24px rgba(72, 85, 72, .2);
+    }
+
+    .music .disc svg {
+      width: 25px;
+      height: 25px;
+      fill: var(--light);
+    }
+
+    .music.paused .ring {
+      animation-play-state: paused;
+    }
+
+    #weddingAudio {
+      display: none;
+    }
+
+    html:not(.motion-ready) #weddingAudio[src] {
+      width: min(82%, 340px);
+      margin: 18px auto 0;
+      display: block;
+      accent-color: var(--sage-deep);
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .scroll-arrow {
+      position: absolute;
+      z-index: 5;
+      bottom: 14px;
+      left: 50%;
+      width: 46px;
+      height: 46px;
+      border: 0;
+      background: transparent;
+      color: var(--sage-deep);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      opacity: .8;
+      transform: translateX(-50%);
+      transition: opacity .45s ease, transform .45s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .scroll-arrow svg {
+      width: 30px;
+      height: 30px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.35;
+      animation: arrow-bounce 1.65s ease-in-out infinite;
+    }
+
+    .scroll-arrow:focus-visible {
+      outline: 2px solid var(--sage);
+      outline-offset: 0;
+      border-radius: 50%;
+    }
+
+    .scroll-arrow.is-hidden {
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 14px);
+    }
+
+    @keyframes arrow-bounce {
+      0%, 100% { transform: translateY(-3px); }
+      50% { transform: translateY(7px); }
+    }
+
+    /* Greeting */
+    .greeting {
+      padding: 96px 34px 112px;
+      text-align: center;
+    }
+
+    .greeting-flower {
+      width: 56%;
+      top: 10px;
+      right: -28%;
+      --move-x: 24px;
+      --rotate: -14deg;
+      --deco-opacity: .7;
+    }
+
+    .greeting-leaves {
+      width: 48%;
+      bottom: 18px;
+      left: -22%;
+      --move-x: -22px;
+      --rotate: 18deg;
+      --deco-delay: .15s;
+      --deco-opacity: .66;
+    }
+
+    .greeting h2 {
+      margin-bottom: 30px;
+      color: #858c82;
+      font-family: "Marck Script", cursive;
+      font-size: 44px;
+      font-weight: 400;
+      letter-spacing: .01em;
+    }
+
+    .greeting p {
+      max-width: 23ch;
+      margin: 0 auto 22px;
+      color: var(--ink-soft);
+      font-family: "Marck Script", cursive;
+      font-size: 23px;
+      line-height: 1.65;
+      text-shadow: 0 1px 0 var(--paper), 0 0 12px var(--paper);
+    }
+
+    /* Program */
+    .program {
+      padding: 18px 20px 94px;
+    }
+
+    .program-card {
+      position: relative;
+      z-index: 3;
+      min-height: 630px;
+      padding: 46px 30px 52px;
+      overflow: hidden;
+      border-radius: 18px;
+      background: var(--sage);
+      color: var(--light);
+      box-shadow: 0 18px 38px rgba(82, 94, 79, .16);
+    }
+
+    .program-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      background: linear-gradient(135deg, rgba(255, 255, 255, .06), transparent 45%);
+    }
+
+    .program-card > :not(.program-deco) {
+      position: relative;
+      z-index: 3;
+    }
+
+    .program-deco {
+      width: 66%;
+      right: -28%;
+      bottom: -12%;
+      z-index: 2;
+      --move-x: 30px;
+      --rotate: -12deg;
+      --deco-delay: 1.15s;
+      --deco-opacity: .2;
+      filter: saturate(.65);
+    }
+
+    .program-card h2 {
+      margin-bottom: 40px;
+      color: var(--light);
+      font-size: 32px;
+      letter-spacing: .12em;
+    }
+
+    .program-step {
+      opacity: 1;
+      transform: none;
+      transition: opacity 1.15s ease var(--step-delay), transform 1.35s cubic-bezier(.2, .72, .2, 1) var(--step-delay);
+    }
+
+    .motion-ready .program-step {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+
+    .motion-ready .program-card.in .program-step {
+      opacity: 1;
+      transform: none;
+    }
+
+    .tl-time {
+      color: var(--light);
+      font-size: 46px;
+      font-weight: 300;
+      letter-spacing: .04em;
+      line-height: 1;
+    }
+
+    .tl-label {
+      margin-top: 5px;
+      color: var(--light-soft);
+      font-size: 22px;
+      line-height: 1.3;
+    }
+
+    .tl-arrow {
+      display: block;
+      height: 60px;
+      margin: 8px 0 5px;
+    }
+
+    .tl-arrow svg {
+      display: block;
+      max-width: 100%;
+    }
+
+    .tl-arrow.right { margin-left: 34%; }
+    .tl-arrow.left { margin-left: 6%; }
+
+    /* Venue */
+    .venue {
+      padding: 86px 30px 105px;
+      text-align: center;
+    }
+
+    .venue-big {
+      width: 58%;
+      top: -62px;
+      left: -30%;
+      --move-x: -28px;
+      --rotate: 15deg;
+      --deco-opacity: .66;
+    }
+
+    .venue-leaves {
+      width: 44%;
+      right: -20%;
+      bottom: 32px;
+      --move-x: 22px;
+      --rotate: -18deg;
+      --deco-delay: .15s;
+      --deco-opacity: .7;
+    }
+
+    .venue h2,
+    .form h2 {
+      margin-bottom: 24px;
+      font-size: 31px;
+    }
+
+    .venue p {
+      max-width: 27ch;
+      margin: 0 auto 32px;
+      color: var(--ink-soft);
+      font-size: 22px;
+      line-height: 1.55;
+      text-shadow: 0 1px 0 var(--paper), 0 0 14px var(--paper);
+    }
+
+    .venue p b {
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    .photos {
+      max-width: 360px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .ph {
+      flex: 1;
+      aspect-ratio: 3 / 4;
+      border-radius: 10px;
+      overflow: hidden;
+      background: linear-gradient(145deg, rgba(231, 234, 224, .9), rgba(244, 243, 235, .9));
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      color: var(--ink-soft);
+    }
+
+    .ph svg {
+      width: 34px;
+      height: 34px;
+      fill: none;
+      stroke: var(--ink-soft);
+      stroke-width: 1.2;
+      opacity: .7;
+    }
+
+    .ph small {
+      font-size: 13px;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+    }
+
+    .venue-photo {
+      width: 100%;
+      height: 100%;
+      display: block;
+      object-fit: cover;
+    }
+
+    .map-btn {
+      width: 146px;
+      height: 146px;
+      margin: -32px auto 0;
+      border-radius: 50%;
+      background: #919b88;
+      color: var(--light);
+      box-shadow: 0 14px 30px rgba(82, 94, 79, .2);
+      display: grid;
+      place-items: center;
+      font-size: 17px;
+      letter-spacing: .07em;
+      line-height: 1.35;
+      text-decoration: none;
+      transition: transform .35s ease, box-shadow .35s ease;
+    }
+
+    .map-btn:active {
+      transform: scale(.96);
+      box-shadow: 0 8px 18px rgba(82, 94, 79, .18);
+    }
+
+    .map-btn:focus-visible,
+    .submit:focus-visible {
+      outline: 2px solid var(--sage-deep);
+      outline-offset: 4px;
+    }
+
+    /* Guest form */
+    .form {
+      padding: 82px 32px 94px;
+    }
+
+    .form-flower {
+      width: 58%;
+      top: -24px;
+      right: -31%;
+      --move-x: 24px;
+      --rotate: -12deg;
+      --deco-opacity: .62;
+    }
+
+    .form-leaves {
+      width: 48%;
+      left: -26%;
+      bottom: 38px;
+      --move-x: -24px;
+      --rotate: 22deg;
+      --deco-delay: .12s;
+      --deco-opacity: .65;
+    }
+
+    .form h2 {
+      margin-bottom: 46px;
+      text-align: center;
+    }
+
+    .field {
+      margin-bottom: 34px;
+    }
+
+    .field > legend,
+    .field > label:not(.opt) {
+      display: block;
+      width: 100%;
+      margin-bottom: 12px;
+      border: 0;
+      color: var(--ink-soft);
+      font-size: 21px;
+      letter-spacing: .01em;
+      line-height: 1.35;
+    }
+
+    .field > legend {
+      padding: 0;
+    }
+
+    .form input[type="text"] {
+      width: 100%;
+      padding: 9px 2px;
+      border: 0;
+      border-bottom: 1px solid var(--line);
+      border-radius: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      font-size: 22px;
+      letter-spacing: .02em;
+    }
+
+    .form input[type="text"]::placeholder {
+      color: #b8bcb3;
+    }
+
+    .form input[type="text"]:focus {
+      border-color: var(--sage-deep);
+      box-shadow: 0 3px 0 -2px rgba(88, 100, 88, .16);
+    }
+
+    fieldset.field {
+      min-width: 0;
+      border: 0;
+    }
+
+    .opt {
+      min-height: 44px;
+      padding: 8px 0;
+      display: grid;
+      grid-template-columns: 24px minmax(0, 1fr);
+      align-items: center;
+      gap: 12px;
+      color: var(--ink-soft);
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1.25;
+    }
+
+    .opt input {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      opacity: 0;
+    }
+
+    .mark {
+      width: 22px;
+      height: 22px;
+      grid-column: 1;
+      grid-row: 1;
+      align-self: center;
+      border: 1px solid var(--sage);
+      display: grid;
+      place-items: center;
+      transition: background .25s ease, box-shadow .25s ease;
+    }
+
+    .opt.radio .mark {
+      border-radius: 50%;
+    }
+
+    .mark::after {
+      content: "";
+      width: 10px;
+      height: 10px;
+      background: var(--sage);
+      opacity: 0;
+      transform: scale(.5);
+      transition: opacity .25s ease, transform .25s ease;
+    }
+
+    .opt.radio .mark::after {
+      border-radius: 50%;
+    }
+
+    .opt input:checked + .mark {
+      background: rgba(135, 145, 127, .11);
+    }
+
+    .opt input:checked + .mark::after {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .opt input:focus-visible + .mark {
+      box-shadow: 0 0 0 3px rgba(135, 145, 127, .2);
+    }
+
+    .option-text {
+      grid-column: 2;
+      grid-row: 1;
+      align-self: center;
+      min-width: 0;
+    }
+
+    .submit {
+      display: block;
+      margin: 44px auto 0;
+      padding: 15px 40px;
+      border: 0;
+      border-radius: 8px;
+      background: var(--sage);
+      color: var(--light);
+      box-shadow: 0 13px 26px rgba(82, 94, 79, .18);
+      cursor: pointer;
+      font-size: 21px;
+      font-weight: 300;
+      letter-spacing: .12em;
+      transition: transform .3s ease, box-shadow .3s ease;
+    }
+
+    .submit:active {
+      transform: scale(.97);
+      box-shadow: 0 8px 18px rgba(82, 94, 79, .16);
+    }
+
+    .thanks {
+      min-height: 32px;
+      margin-top: 22px;
+      color: var(--sage-deep);
+      font-family: "Marck Script", cursive;
+      font-size: 23px;
+      text-align: center;
+      opacity: 0;
+      transition: opacity .55s ease;
+    }
+
+    .thanks.show {
+      opacity: 1;
+    }
+
+    .thanks.is-error {
+      color: #8c5d5d;
+    }
+
+    /* Message from the couple */
+    .couple-note {
+      min-height: 390px;
+      padding: 42px 28px 96px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+    }
+
+    .couple-note-card {
+      width: min(100%, 390px);
+      padding: 48px 30px 52px;
+      border-radius: 48% 48% 42% 42% / 30% 30% 24% 24%;
+      background: rgba(248, 245, 235, .72);
+      box-shadow: 0 20px 46px rgba(101, 96, 82, .08), inset 0 1px 0 rgba(255, 255, 255, .64);
+    }
+
+    .couple-note p {
+      color: #756c58;
+      font-size: 28px;
+      line-height: 1.18;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
+    }
+
+    .couple-note-left {
+      width: 42%;
+      left: -20%;
+      bottom: 2px;
+      --move-x: -22px;
+      --rotate: 24deg;
+      --deco-opacity: .52;
+    }
+
+    .couple-note-right {
+      width: 36%;
+      top: 2px;
+      right: -17%;
+      --move-x: 20px;
+      --rotate: -24deg;
+      --deco-delay: .2s;
+      --deco-opacity: .48;
+    }
+
+    footer {
+      padding: 28px 12px 38px;
+      color: #aeb2a9;
+      font-size: 13px;
+      letter-spacing: .22em;
+      text-align: center;
+    }
+
+    @media (max-width: 360px) {
+      .hero { padding-inline: 20px; }
+      .hero-names { font-size: 46px; }
+      .hero-date { font-size: 28px; }
+      .greeting,
+      .form { padding-inline: 26px; }
+      .program-card { padding-inline: 24px; }
+      .program-card h2 { font-size: 28px; }
+      .tl-time { font-size: 42px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      .motion-ready .reveal,
+      .motion-ready .deco,
+      .motion-ready .program-step {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+      .hero-brush {
+        opacity: var(--brush-opacity, .46);
+        transform: translate(-50%, -46%) rotate(-1.5deg);
+        animation: none;
+      }
+      .music .ring,
+      .scroll-arrow svg { animation: none; }
+    }
+  </style>
+</head>
+<body class="">
+  <main class="site">
+    <section class="hero" aria-labelledby="hero-title" style="z-index: 3;">
+      <img class="deco hero-big" src="/assets/default-media/f43791d9275bd0ff.png" alt="" style="inset: -40.3588px auto auto 253.454px;">
+      
+      
+      <img class="deco hero-medium" src="/assets/default-media/14407256d58147ab.png" alt="">
+      <img class="deco hero-bottom-right" src="/assets/default-media/7603a522e483f490.png" alt="" style="inset: 660.232px auto auto 253.946px; rotate: -50deg;" data-editor-rotation="-50">
+
+      <div class="hero-title-group"><img class="hero-brush editor-custom-brush" src="/assets/default-media/0d4162e3858ffadd.png" alt="" style="inset: 106.97px auto auto 203.372px;"><img class="hero-brush editor-custom-brush" src="/assets/default-media/0d4162e3858ffadd.png" alt="" style="inset: -302.893px auto auto -309.565px;"><img class="hero-brush editor-custom-brush" src="/assets/default-media/0d4162e3858ffadd.png" alt="" style="inset: -397.737px auto auto -373.733px;">
+        <img class="hero-brush" src="/assets/default-media/0d4162e3858ffadd.png" alt="" style="inset: -411.788px auto auto -387.811px;">
+        <h1 class="hero-names reveal" id="hero-title" style="font-size: 54px; font-family: &quot;Great Vibes&quot;, &quot;Marck Script&quot;, cursive;">Кристина<br>и<br>Иван</h1>
+        <div class="hero-date reveal" style="font-family: &quot;Great Vibes&quot;, &quot;Marck Script&quot;, cursive;">27.07.2027</div>
+      </div>
+
+      <button class="music reveal paused" id="music" type="button" aria-label="Включить музыку" aria-pressed="false">
+        <svg class="ring" viewBox="0 0 118 118" aria-hidden="true">
+          <defs><path id="circle" d="M59,59 m-45,0 a45,45 0 1,1 90,0 a45,45 0 1,1 -90,0"></path></defs>
+          <text fill="#7d8571" font-family="Cormorant" font-size="12.5" letter-spacing="3">
+            <textPath href="#circle" startOffset="0%">ВКЛЮЧИТЬ&nbsp;МУЗЫКУ&nbsp;•&nbsp;ВКЛЮЧИТЬ&nbsp;МУЗЫКУ&nbsp;•&nbsp;</textPath>
+          </text>
+        </svg>
+        <span class="disc">
+          <svg id="mIcon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 00-2.5-4v8a4.5 4.5 0 002.5-4z"></path></svg>
+        </span>
+      </button><audio id="weddingAudio" preload="metadata" data-music-stored="true" data-music-file-name="BrainStorm - Maybe (Official Video).mp3" controls="" autoplay="" src="/assets/default-music.mp3"></audio>
+
+      <button class="scroll-arrow" id="scrollArrow" type="button" aria-label="Перейти к приглашению">
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M7 12.5 16 21l9-8.5"></path>
+        </svg>
+      </button>
+    <img class="deco editor-added-decor" src="/assets/default-media/f43791d9275bd0ff.png" alt="" style="position: absolute; inset: -10.8086px auto auto -54.1406px; width: 42%; max-width: none; z-index: 2; --deco-opacity: 0.78;"><img class="deco editor-added-decor" src="/assets/default-media/af7c2d4e3d62e217.png" alt="" style="position: absolute; inset: -14.5469px auto auto 22.8633px; width: 42%; max-width: none; rotate: -180deg; z-index: 1; --deco-opacity: 0.78;" data-editor-rotation="-180"></section>
+
+    <section class="greeting" aria-labelledby="greeting-title">
+      <img class="deco greeting-flower" src="/assets/default-media/7603a522e483f490.png" alt="" style="inset: -4.16255px auto auto 251.612px; rotate: -86deg;" data-editor-rotation="-86">
+      <img class="deco greeting-leaves" src="/assets/default-media/af7c2d4e3d62e217.png" alt="">
+
+      <h2 class="reveal" id="greeting-title" style="font-family: &quot;Great Vibes&quot;, &quot;Marck Script&quot;, cursive;">Дорогие гости!</h2>
+      <p class="reveal" style="font-family: &quot;Great Vibes&quot;, &quot;Marck Script&quot;, cursive; font-size: 26px;">Мы будем счастливы разделить с Вами радость неповторимого для нас дня — дня нашей свадьбы!</p>
+      <p class="reveal" style="font-family: &quot;Great Vibes&quot;, &quot;Marck Script&quot;, cursive; font-size: 26px;">Приглашаем присоединиться к нашему празднику и украсить его своим присутствием!</p>
+    </section>
+
+    <section class="program" aria-labelledby="program-title">
+      <div class="program-card reveal">
+        <img class="deco program-deco" src="/assets/default-media/14407256d58147ab.png" alt="">
+        <h2 class="program-step" id="program-title" style="--step-delay: .3s; font-family: Cormorant, Georgia, serif;">ПРОГРАММА ДНЯ</h2>
+
+        <div class="program-step" style="--step-delay: 1.05s;">
+          <div class="tl-time">16:30</div>
+          <div class="tl-label">Сбор гостей, фуршет</div>
+        </div>
+
+        <div class="tl-arrow right program-step" style="--step-delay: 1.85s;" aria-hidden="true">
+          <svg width="150" height="52" viewBox="0 0 150 52" fill="none">
+            <path d="M4 8 C60 6 120 14 138 40" stroke="#dfe3d3" stroke-width="1.4" stroke-dasharray="5 6" stroke-linecap="round"></path>
+            <path d="M138 40 l-12 -3 M138 40 l-4 -12" stroke="#dfe3d3" stroke-width="1.4" stroke-linecap="round"></path>
+          </svg>
+        </div>
+
+        <div class="program-step" style="--step-delay: 2.65s;">
+          <div class="tl-time">17:00</div>
+          <div class="tl-label">Выездная церемония</div>
+        </div>
+
+        <div class="tl-arrow left program-step" style="--step-delay: 3.45s;" aria-hidden="true">
+          <svg width="150" height="52" viewBox="0 0 150 52" fill="none">
+            <path d="M146 8 C90 6 30 14 12 40" stroke="#dfe3d3" stroke-width="1.4" stroke-dasharray="5 6" stroke-linecap="round"></path>
+            <path d="M12 40 l12 -3 M12 40 l4 -12" stroke="#dfe3d3" stroke-width="1.4" stroke-linecap="round"></path>
+          </svg>
+        </div>
+
+        <div class="program-step" style="--step-delay: 4.25s;">
+          <div class="tl-time">18:00</div>
+          <div class="tl-label">Праздничный банкет</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="venue" aria-labelledby="venue-title">
+      <img class="deco venue-big" src="/assets/default-media/f43791d9275bd0ff.png" alt="" style="inset: -6.7168px auto auto -118.688px;">
+      <img class="deco venue-leaves" src="/assets/default-media/af7c2d4e3d62e217.png" alt="" style="inset: 672.926px auto auto 249.069px;">
+
+      <h2 class="reveal" id="venue-title">МЕСТО ТОРЖЕСТВА</h2>
+      <p class="reveal" style="font-size: 22px;">Наша свадьба будет проходить в усадьбе «ПРИЛУКОМОРЬЕ».<br>ул.Береговая, д.13, д.Прилуки, Брестский р-н</p>
+
+      <div class="photos reveal">
+        <div class="ph venue-photo-card"><img class="venue-photo reveal" src="/assets/default-media/29e4446b2c8ea4a2.jpg" alt="Фотография места проведения" data-file-name="priluk3.jpg"></div>
+        <div class="ph venue-photo-card"><img class="venue-photo reveal" src="/assets/default-media/199be7dce5cb4b91.jpg" alt="Фотография места проведения" data-file-name="priluk2.jpg"></div>
+      </div>
+
+      <a class="map-btn reveal" href="https://maps.app.goo.gl/Xe3E5LEnsvZ3Zjsv9" target="_blank" rel="noopener">ПОСМОТРЕТЬ НА КАРТЕ</a>
+    <img class="deco editor-added-decor" src="/assets/default-media/14407256d58147ab.png" alt="" style="position: absolute; inset: -3.73187px auto auto 278.551px; width: 42%; max-width: none; z-index: 2; --deco-opacity: 0.78; rotate: -20deg;" data-editor-rotation="-20"></section>
+
+    <section class="form" aria-labelledby="form-title">
+      <img class="deco form-flower" src="/assets/default-media/14407256d58147ab.png" alt="" style="inset: 521.796px auto auto 255.632px; rotate: -30deg; width: 48%; max-width: none; z-index: 1;" data-editor-rotation="-30">
+      <img class="deco form-leaves" src="/assets/default-media/af7c2d4e3d62e217.png" alt="">
+
+      <h2 class="reveal" id="form-title">АНКЕТА ГОСТЯ</h2>
+
+      <form id="guestForm">
+        <div class="field reveal">
+          <label for="fio">Ваши имя и фамилия</label>
+          <input type="text" id="fio" name="fio" placeholder="ФИО" autocomplete="name">
+        </div>
+
+        <fieldset class="field reveal">
+          <legend>Планируете ли присутствовать на свадьбе?</legend>
+          <label class="opt radio">
+            <input type="radio" name="attend" value="yes">
+            <span class="mark" aria-hidden="true"></span>
+            <span class="option-text">Да, с удовольствием!</span>
+          </label>
+          <label class="opt radio">
+            <input type="radio" name="attend" value="no">
+            <span class="mark" aria-hidden="true"></span>
+            <span class="option-text">К сожалению, не смогу</span>
+          </label>
+        </fieldset><div class="field reveal" data-question-key="companions">
+            <label for="companions">Гости, которые придут с вами</label>
+            <input type="text" id="companions" name="companions" placeholder="Имена гостей">
+          </div>
+
+        
+
+        <button class="submit reveal" type="submit">Отправить ответ</button>
+        <div class="thanks" id="thanks" role="status" aria-live="polite">Спасибо! Ждём вас с нетерпением ♥</div>
+      </form>
+    </section><section class="couple-note" aria-label="Сообщение от молодожёнов">
+            <img class="deco couple-note-left" src="/assets/default-media/af7c2d4e3d62e217.png" alt="">
+            <img class="deco couple-note-right" src="/assets/default-media/7603a522e483f490.png" alt="">
+            <div class="couple-note-card reveal">
+              <p class="" style="font-family: &quot;Great Vibes&quot;, &quot;Marck Script&quot;, cursive; width: 113%; max-width: none; font-size: 29px; translate: -15px;" data-editor-x="-15" data-editor-y="0">Если захотите нас порадовать, вместо цветов мы будем очень рады вашему любимому напитку — он займёт почётное место на нашем столе и сделает праздник ещё уютнее.</p>
+            </div>
+          </section>
+
+    <footer class="">КРИСТИНА И ИВАН · 27.07.2027</footer>
+  </main>
+
+  
+
+  <script>
+    const revealObserver = new IntersectionObserver((entries, observer) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("in");
+        observer.unobserve(entry.target);
+      });
+    }, { threshold: .14, rootMargin: "0px 0px -7% 0px" });
+
+    document.querySelectorAll(".reveal, .deco").forEach((element) => revealObserver.observe(element));
+
+    const scrollArrow = document.getElementById("scrollArrow");
+
+    if (scrollArrow) {
+      const updateScrollArrow = () => scrollArrow.classList.toggle("is-hidden", window.scrollY > 12);
+
+      scrollArrow.addEventListener("click", () => {
+        document.querySelector(".greeting")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+
+      window.addEventListener("scroll", updateScrollArrow, { passive: true });
+      updateScrollArrow();
+    }
+
+    const MUSIC_DB_NAME = "wedding-editor-media";
+    const MUSIC_DB_STORE = "files";
+    const MUSIC_STORAGE_KEY = "wedding-music";
+
+    const openMusicDatabase = () => new Promise((resolve, reject) => {
+      if (!window.indexedDB) {
+        resolve(null);
+        return;
+      }
+
+      const request = indexedDB.open(MUSIC_DB_NAME, 1);
+      request.addEventListener("upgradeneeded", () => {
+        if (!request.result.objectStoreNames.contains(MUSIC_DB_STORE)) {
+          request.result.createObjectStore(MUSIC_DB_STORE);
+        }
+      });
+      request.addEventListener("success", () => resolve(request.result));
+      request.addEventListener("error", () => reject(request.error));
+    });
+
+    const restoreStoredMusic = async (audio) => {
+      if (!audio?.dataset.musicStored || audio.getAttribute("src")) return;
+
+      try {
+        const database = await openMusicDatabase();
+        if (!database) return;
+        const blob = await new Promise((resolve, reject) => {
+          const transaction = database.transaction(MUSIC_DB_STORE, "readonly");
+          const request = transaction.objectStore(MUSIC_DB_STORE).get(MUSIC_STORAGE_KEY);
+          request.addEventListener("success", () => resolve(request.result || null));
+          request.addEventListener("error", () => reject(request.error));
+        });
+        database.close();
+        if (blob) audio.src = URL.createObjectURL(blob);
+      } catch (error) {
+        console.warn("Не удалось загрузить музыку приглашения", error);
+      }
+    };
+
+    const musicButton = document.getElementById("music");
+    const weddingAudio = document.getElementById("weddingAudio");
+    const musicIcon = document.querySelector("#mIcon path");
+    const PLAY = "M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 00-2.5-4v8a4.5 4.5 0 002.5-4z";
+    const PAUSE = "M6 5h4v14H6zM14 5h4v14h-4z";
+    const musicReady = restoreStoredMusic(weddingAudio);
+
+    const setMusicButtonState = (playing) => {
+      musicButton?.classList.toggle("paused", !playing);
+      musicButton?.setAttribute("aria-pressed", String(playing));
+      musicButton?.setAttribute("aria-label", playing ? "Выключить музыку" : "Включить музыку");
+      musicIcon?.setAttribute("d", playing ? PAUSE : PLAY);
+    };
+
+    const playMusic = async () => {
+      if (!weddingAudio?.getAttribute("src")) return false;
+      try {
+        const playback = weddingAudio.play();
+        await playback;
+        setMusicButtonState(true);
+        return true;
+      } catch (error) {
+        setMusicButtonState(false);
+        return false;
+      }
+    };
+
+    const removeMusicUnlockListeners = () => {
+      document.removeEventListener("pointerdown", startMusicAfterFirstInteraction, true);
+      document.removeEventListener("touchstart", startMusicAfterFirstInteraction, true);
+      document.removeEventListener("touchend", startMusicAfterFirstInteraction, true);
+      document.removeEventListener("click", startMusicAfterFirstInteraction, true);
+      document.removeEventListener("keydown", startMusicAfterFirstInteraction, true);
+    };
+
+    const startMusicAfterFirstInteraction = async (event) => {
+      if (event.target.closest?.("#music")) return;
+      if (await playMusic()) removeMusicUnlockListeners();
+    };
+
+    musicReady.then(async () => {
+      if (await playMusic()) return;
+      document.addEventListener("pointerdown", startMusicAfterFirstInteraction, true);
+      document.addEventListener("touchstart", startMusicAfterFirstInteraction, true);
+      document.addEventListener("touchend", startMusicAfterFirstInteraction, true);
+      document.addEventListener("click", startMusicAfterFirstInteraction, true);
+      document.addEventListener("keydown", startMusicAfterFirstInteraction, true);
+    });
+
+    if (musicButton && musicIcon) {
+      musicButton.addEventListener("click", async () => {
+        await musicReady;
+
+        if (!weddingAudio?.getAttribute("src")) {
+          setMusicButtonState(false);
+          return;
+        }
+
+        if (weddingAudio.paused) {
+          if (!await playMusic()) {
+            setMusicButtonState(false);
+          }
+        } else {
+          weddingAudio.pause();
+          setMusicButtonState(false);
+        }
+      });
+
+      weddingAudio?.addEventListener("ended", () => setMusicButtonState(false));
+    }
+
+    const guestForm = document.getElementById("guestForm");
+
+    if (guestForm) {
+      guestForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const form = event.currentTarget;
+        const submitButton = form.querySelector(".submit");
+        const thanks = document.getElementById("thanks");
+        const answers = {};
+        const labels = {};
+        const data = new FormData(form);
+
+        data.forEach((value, key) => {
+          if (!(key in answers)) {
+            answers[key] = value;
+            return;
+          }
+
+          answers[key] = Array.isArray(answers[key])
+            ? [...answers[key], value]
+            : [answers[key], value];
+        });
+
+        form.querySelectorAll("[name]").forEach((input) => {
+          if (!input.name || labels[input.name]) return;
+          const field = input.closest(".field");
+          labels[input.name] = field?.querySelector(":scope > legend, :scope > label:not(.opt)")?.textContent?.trim()
+            || input.name;
+        });
+
+        const slug = location.pathname.match(/^\/i\/([a-z0-9]+)$/)?.[1];
+        if (!slug) {
+          console.log("Ответ гостя:", answers);
+          thanks?.classList.remove("is-error");
+          thanks?.classList.add("show");
+          return;
+        }
+
+        submitButton.disabled = true;
+        submitButton.textContent = "Отправляем…";
+        thanks?.classList.remove("show", "is-error");
+
+        try {
+          const response = await fetch(`/api/public/invitations/${slug}/responses`, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ answers, labels })
+          });
+          const result = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(result.error || "Не удалось отправить ответ");
+          form.reset();
+          location.assign(`/i/${slug}/thanks`);
+        } catch (error) {
+          thanks.textContent = "Ответ не отправился. Проверьте интернет и попробуйте ещё раз.";
+          thanks.classList.add("show", "is-error");
+        } finally {
+          submitButton.disabled = false;
+          submitButton.textContent = "Отправить ответ";
+        }
+      });
+    }
+  </script>
+
+
+</body></html>

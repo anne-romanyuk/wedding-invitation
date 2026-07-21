@@ -1,4 +1,5 @@
 const STORAGE_KEY = "wedding-editor-snapshot-v1";
+const DEFAULT_TEMPLATE_URL = "default-template.html?editorPreview=1";
 const frame = document.getElementById("previewFrame");
 const selectedName = document.getElementById("selectedName");
 const saveStatus = document.getElementById("saveStatus");
@@ -1178,6 +1179,15 @@ function pointImageAssetsToServer(root) {
   });
 }
 
+function pointMediaSourceToServer(element) {
+  const source = element?.getAttribute("src");
+  if (!source || source.startsWith("data:") || source.startsWith("blob:")) return;
+  const assetUrl = new URL(source, previewDocument.baseURI);
+  element.src = assetUrl.origin === location.origin
+    ? `${assetUrl.pathname}${assetUrl.search}`
+    : assetUrl.href;
+}
+
 async function buildStandaloneDocument({ inlineImages = true } = {}) {
   const root = previewDocument.documentElement.cloneNode(true);
   root.classList.remove("motion-ready");
@@ -1195,7 +1205,15 @@ async function buildStandaloneDocument({ inlineImages = true } = {}) {
   const audio = root.querySelector("#weddingAudio");
   if (audio?.dataset.musicStored) {
     const music = await readStoredMusic();
-    if (music) audio.src = await blobToDataUrl(music);
+    if (music) {
+      audio.src = await blobToDataUrl(music);
+    } else if (inlineImages && audio.getAttribute("src") && !audio.getAttribute("src").startsWith("data:")) {
+      const response = await fetch(new URL(audio.getAttribute("src"), previewDocument.baseURI));
+      if (!response.ok) throw new Error("Не удалось встроить музыку приглашения");
+      audio.src = await blobToDataUrl(await response.blob());
+    } else if (!inlineImages) {
+      pointMediaSourceToServer(audio);
+    }
   }
 
   return `<!DOCTYPE html>\n${root.outerHTML}`;
@@ -1350,6 +1368,14 @@ async function exportHtml() {
 function setupPreview() {
   previewDocument = frame.contentDocument;
   if (!previewDocument?.querySelector(".site")) return;
+  try {
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+    if (saved?.version === 1 && saved.html) {
+      previewDocument.querySelector(".site").innerHTML = saved.html;
+    }
+  } catch (error) {
+    console.warn("Не удалось восстановить локальный черновик", error);
+  }
   nextEditorId = 1;
   selectedElement = null;
   const site = previewDocument.querySelector(".site");
@@ -1435,7 +1461,7 @@ document.getElementById("resetInvitation").addEventListener("click", async () =>
   }
   if (musicObjectUrl) URL.revokeObjectURL(musicObjectUrl);
   musicObjectUrl = null;
-  frame.src = `index.html?editorPreview=1&reset=${Date.now()}`;
+  frame.src = `${DEFAULT_TEMPLATE_URL}&reset=${Date.now()}`;
   showToast("Исходная версия восстановлена");
 });
 

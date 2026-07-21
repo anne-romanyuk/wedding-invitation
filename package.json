@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "check": "node --check server.js && node --check editor.js && node --check login.js && node --check dashboard.js && node --check responses.js"
+    "check": "node --check server.js && node --check editor.js && node --check login.js && node --check dashboard.js && node --check responses.js && node --check scripts/set-default-template.mjs",
+    "set-default-template": "node scripts/set-default-template.mjs"
   },
   "engines": {
     "node": ">=20"
