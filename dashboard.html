@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#e9e5dc">
+  <title>Личный кабинет — Приглашения</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quattrocento+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="admin-shell">
+    <header class="admin-topbar">
+      <a class="brand" href="editor.html">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span class="brand-copy">
+          <strong>Конструктор приглашений</strong>
+          <span>Личный кабинет</span>
+        </span>
+      </a>
+      <div class="topbar-actions">
+        <a class="button button-primary" href="editor.html">Открыть конструктор</a>
+        <button class="button button-ghost" id="logout" type="button">Выйти</button>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="page-heading">
+        <div>
+          <p class="eyebrow">Мои публикации</p>
+          <h1>Ссылки на приглашения</h1>
+          <p>Каждая сохранённая версия получает отдельную ссылку. Откройте карточку, чтобы посмотреть ответы гостей.</p>
+        </div>
+      </section>
+
+      <section class="stats-grid" aria-label="Сводка">
+        <article class="stat-card"><span>Опубликовано версий</span><strong id="versionCount">—</strong></article>
+        <article class="stat-card"><span>Всего ответов</span><strong id="responseCount">—</strong></article>
+        <article class="stat-card"><span>Последняя публикация</span><strong id="lastPublished">—</strong></article>
+      </section>
+
+      <section aria-labelledby="versionListTitle">
+        <div class="section-heading">
+          <h2 id="versionListTitle">Все версии</h2>
+          <span id="versionListHint">Загрузка…</span>
+        </div>
+        <div class="version-list" id="versionList">
+          <div class="loading-card">Загружаем опубликованные приглашения…</div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#e9e5dc">
+  <title>Ответы гостей — Приглашение</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quattrocento+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <div class="admin-shell">
+    <header class="admin-topbar">
+      <a class="brand" href="dashboard.html">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <span class="brand-copy"><strong>Конструктор приглашений</strong><span>Ответы гостей</span></span>
+      </a>
+      <div class="topbar-actions">
+        <a class="button button-ghost" href="dashboard.html">Все версии</a>
+        <a class="button button-primary" href="editor.html">Конструктор</a>
+      </div>
+    </header>
+
+    <main class="page">
+      <section class="page-heading">
+        <div>
+          <p class="eyebrow">Ответы гостей</p>
+          <h1 id="invitationTitle">Загрузка…</h1>
+          <p id="invitationMeta">Получаем данные приглашения.</p>
+        </div>
+        <div class="page-actions" id="invitationActions" hidden>
+          <button class="button button-ghost" id="copyLink" type="button">Скопировать ссылку</button>
+          <a class="button button-primary" id="openInvitation" href="#" target="_blank" rel="noopener">Открыть приглашение</a>
+        </div>
+      </section>
+
+      <section class="stats-grid" aria-label="Сводка ответов">
+        <article class="stat-card"><span>Всего ответов</span><strong id="totalResponses">—</strong></article>
+        <article class="stat-card"><span>Придут</span><strong id="yesResponses">—</strong></article>
+        <article class="stat-card"><span>Не смогут</span><strong id="noResponses">—</strong></article>
+      </section>
+
+      <section aria-labelledby="responseListTitle">
+        <div class="section-heading">
+          <h2 id="responseListTitle">Анкеты</h2>
+          <span id="responseListHint">Загрузка…</span>
+        </div>
+        <div class="response-list" id="responseList">
+          <div class="loading-card">Загружаем ответы гостей…</div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="responses.js"></script>
+</body>
+</html>

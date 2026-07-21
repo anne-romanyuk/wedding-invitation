@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#f2ead6">
+  <title>Спасибо! Ваш ответ сохранён ♥</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;1,400&family=Marck+Script&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #f2ead6;
+      --ink: #656a61;
+      --sage: #879384;
+      --sage-deep: #657263;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-width: 320px;
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      min-height: 100svh;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 42%, rgba(255, 252, 242, .82), transparent 19rem),
+        var(--cream);
+      color: var(--ink);
+      font-family: "Cormorant", Georgia, serif;
+    }
+
+    .thank-you-page {
+      position: relative;
+      z-index: 2;
+      min-height: 100svh;
+      padding: max(42px, env(safe-area-inset-top)) 26px max(34px, env(safe-area-inset-bottom));
+      display: grid;
+      place-items: center;
+      isolation: isolate;
+    }
+
+    .thank-you-content {
+      position: relative;
+      z-index: 5;
+      width: min(100%, 430px);
+      text-align: center;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 1.25s ease .35s, transform 1.35s cubic-bezier(.18, .72, .18, 1) .35s;
+    }
+
+    .is-ready .thank-you-content {
+      opacity: 1;
+      transform: none;
+    }
+
+    .title-group {
+      position: relative;
+      min-height: 210px;
+      display: grid;
+      place-items: center;
+    }
+
+    .brush {
+      position: absolute;
+      z-index: -1;
+      top: 50%;
+      left: 50%;
+      width: min(122%, 520px);
+      max-width: none;
+      opacity: 0;
+      filter: blur(2.4px);
+      transform: translate(-50%, -47%) scale(.92) rotate(-1.5deg);
+      transition: opacity 1.5s ease .1s, transform 1.7s cubic-bezier(.18, .72, .18, 1) .1s;
+    }
+
+    .is-ready .brush {
+      opacity: .53;
+      transform: translate(-50%, -47%) scale(1) rotate(-1.5deg);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(46px, 14vw, 68px);
+      font-weight: 300;
+      letter-spacing: -.035em;
+      line-height: .88;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, .42);
+    }
+
+    h1 span {
+      margin-top: 16px;
+      display: block;
+      font-family: "Marck Script", cursive;
+      font-size: .68em;
+      font-weight: 400;
+      letter-spacing: 0;
+      line-height: 1;
+    }
+
+    .message {
+      max-width: 330px;
+      margin: 12px auto 0;
+      font-size: 21px;
+      line-height: 1.38;
+    }
+
+    .back-link {
+      min-width: 218px;
+      min-height: 52px;
+      margin-top: 32px;
+      padding: 12px 24px;
+      border: 1px solid rgba(255, 255, 255, .54);
+      border-radius: 999px;
+      background: rgba(135, 147, 132, .82);
+      box-shadow: 0 13px 26px rgba(90, 103, 88, .16), inset 1px 1px 4px rgba(255, 255, 255, .28);
+      color: #fffdf7;
+      display: inline-grid;
+      place-items: center;
+      font-family: "Cormorant", Georgia, serif;
+      font-size: 16px;
+      letter-spacing: .08em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: transform .28s ease, box-shadow .28s ease, background .28s ease;
+    }
+
+    .back-link:hover {
+      background: var(--sage-deep);
+      box-shadow: 0 15px 30px rgba(90, 103, 88, .2), inset 1px 1px 4px rgba(255, 255, 255, .28);
+      transform: translateY(-2px);
+    }
+
+    .back-link:active {
+      transform: scale(.97);
+    }
+
+    .back-link:focus-visible {
+      outline: 2px solid var(--sage-deep);
+      outline-offset: 4px;
+    }
+
+    .flower {
+      position: absolute;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(18px) scale(.94);
+      transition: opacity 1.35s ease, transform 1.6s cubic-bezier(.18, .72, .18, 1);
+      user-select: none;
+    }
+
+    .is-ready .flower {
+      opacity: .82;
+      transform: none;
+    }
+
+    .flower-top {
+      top: -40px;
+      right: -96px;
+      width: min(76vw, 360px);
+      transform-origin: top right;
+    }
+
+    .flower-bottom {
+      bottom: -90px;
+      left: -98px;
+      width: min(78vw, 380px);
+      transform-origin: bottom left;
+      transition-delay: .2s;
+    }
+
+    .leaves-bottom {
+      right: -38px;
+      bottom: 18px;
+      width: min(42vw, 190px);
+      opacity: 0;
+      transform: translateX(18px) rotate(-8deg);
+      transition-delay: .38s;
+    }
+
+    .is-ready .leaves-bottom {
+      opacity: .63;
+      transform: rotate(-8deg);
+    }
+
+    @media (max-width: 380px) {
+      .title-group {
+        min-height: 190px;
+      }
+
+      .message {
+        font-size: 19px;
+      }
+
+      .flower-top {
+        right: -114px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .thank-you-content,
+      .brush,
+      .flower {
+        opacity: 1;
+        transform: none;
+        transition: none;
+      }
+
+      .brush {
+        opacity: .53;
+        transform: translate(-50%, -47%) rotate(-1.5deg);
+      }
+
+      .leaves-bottom {
+        opacity: .63;
+        transform: rotate(-8deg);
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="thank-you-page">
+    <img class="flower flower-top" src="/assets/medium-flower.png" alt="">
+    <img class="flower flower-bottom" src="/assets/big.png" alt="">
+    <img class="flower leaves-bottom" src="/assets/small-leaves.png" alt="">
+
+    <section class="thank-you-content" aria-labelledby="thankYouTitle">
+      <div class="title-group">
+        <img class="brush" src="/assets/brush-stroke.png" alt="">
+        <h1 id="thankYouTitle">Спасибо!<span>Ваш ответ сохранён ♥</span></h1>
+      </div>
+      <a class="back-link" id="backToInvitation" href="/">Вернуться к приглашению</a>
+    </section>
+  </main>
+
+  <script>
+    const invitationSlug = location.pathname.match(/^\/i\/([a-z0-9]+)\/thanks$/)?.[1];
+    if (invitationSlug) document.getElementById("backToInvitation").href = `/i/${invitationSlug}`;
+    requestAnimationFrame(() => requestAnimationFrame(() => document.body.classList.add("is-ready")));
+  </script>
+</body>
+</html>

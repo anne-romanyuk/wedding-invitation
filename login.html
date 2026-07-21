@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#e9e5dc">
+  <title>Вход — Конструктор приглашений</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quattrocento+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <main class="login-page">
+    <section class="login-card" aria-labelledby="loginTitle">
+      <span class="brand-mark" aria-hidden="true">A</span>
+      <h1 id="loginTitle">Личный кабинет</h1>
+      <p>Введите пароль владельца, чтобы открыть конструктор, ссылки и ответы гостей.</p>
+      <form class="login-form" id="loginForm">
+        <input id="password" name="password" type="password" autocomplete="current-password" placeholder="Пароль" aria-label="Пароль" aria-describedby="loginError" required>
+        <p class="form-error" id="loginError" role="alert"></p>
+        <button class="button button-primary" type="submit">Войти</button>
+      </form>
+    </section>
+  </main>
+  <script src="login.js"></script>
+</body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#e9e5dc">
+  <title>Редактор свадебного приглашения</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Quattrocento+Sans:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="editor.css">
+</head>
+<body>
+  <div class="editor-app">
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">A</span>
+        <div>
+          <strong>Конструктор приглашения</strong>
+          <span id="saveStatus">Все изменения сохранены</span>
+        </div>
+      </div>
+
+      <div class="topbar-actions">
+        <a class="button button-ghost" href="dashboard.html">Личный кабинет</a>
+        <button class="button button-ghost" id="openPreview" type="button">Открыть сайт</button>
+        <button class="button button-ghost" id="exportHtml" type="button">Скачать для телефона</button>
+        <button class="button button-primary" id="saveChanges" type="button">Создать версию</button>
+      </div>
+    </header>
+
+    <main class="workspace">
+      <aside class="inspector" aria-label="Панель редактирования">
+        <section class="welcome-card">
+          <span class="step-badge">1</span>
+          <div>
+            <strong>Выберите элемент</strong>
+            <p>Нажмите на текст, цветок или блок прямо в макете справа.</p>
+          </div>
+        </section>
+
+        <section class="selected-card">
+          <span>Выбрано</span>
+          <strong id="selectedName">Ничего не выбрано</strong>
+        </section>
+
+        <details class="panel-section" open>
+          <summary>Публикация</summary>
+          <div class="panel-content">
+            <label class="control control-wide">
+              <span>Название версии</span>
+              <input id="versionTitle" type="text" maxlength="160" placeholder="Например: Основное приглашение">
+            </label>
+            <p class="hint">Кнопка «Создать версию» сохранит отдельную копию и выдаст гостевую ссылку.</p>
+          </div>
+        </details>
+
+        <details class="panel-section" open>
+          <summary>Текст и стиль</summary>
+          <div class="panel-content" data-selection-controls>
+            <label class="control control-wide">
+              <span>Текст</span>
+              <textarea id="textValue" rows="4" placeholder="Выберите текстовый элемент"></textarea>
+            </label>
+
+            <div class="control-grid">
+              <label class="control">
+                <span>Размер</span>
+                <input id="fontSize" type="range" min="10" max="84" step="1">
+                <output id="fontSizeOutput">—</output>
+              </label>
+
+              <label class="control color-control">
+                <span>Цвет текста</span>
+                <input id="textColor" type="color" value="#70766d">
+              </label>
+
+              <label class="control control-wide">
+                <span>Шрифт</span>
+                <select id="fontFamily">
+                  <option value="cormorant">Cormorant — классический</option>
+                  <option value="marck">Marck Script — рукописный</option>
+                  <option value="adine">Adine Kirnberg — каллиграфический</option>
+                  <option value="great-vibes">Great Vibes — каллиграфический</option>
+                  <option value="georgia">Georgia — строгий</option>
+                  <option value="times">Times New Roman</option>
+                  <option value="arial">Arial — современный</option>
+                </select>
+              </label>
+
+              <label class="control control-wide">
+                <span>Выравнивание</span>
+                <select id="textAlign">
+                  <option value="left">Слева</option>
+                  <option value="center">По центру</option>
+                  <option value="right">Справа</option>
+                </select>
+              </label>
+            </div>
+          </div>
+        </details>
+
+        <details class="panel-section" open>
+          <summary>Размер и положение</summary>
+          <div class="panel-content" data-selection-controls>
+            <label class="control">
+              <span>Ширина</span>
+              <input id="elementWidth" type="range" min="10" max="150" step="1">
+              <output id="elementWidthOutput">—</output>
+            </label>
+
+            <label class="control">
+              <span>Прозрачность</span>
+              <input id="elementOpacity" type="range" min="0" max="1" step="0.01">
+              <output id="elementOpacityOutput">—</output>
+            </label>
+
+            <div class="control-grid compact-grid">
+              <label class="control">
+                <span>Сдвиг X</span>
+                <input id="moveX" type="number" min="-400" max="400" step="1" value="0">
+              </label>
+              <label class="control">
+                <span>Сдвиг Y</span>
+                <input id="moveY" type="number" min="-400" max="400" step="1" value="0">
+              </label>
+              <label class="control">
+                <span>Поворот</span>
+                <input id="rotation" type="number" min="-180" max="180" step="1" value="0">
+              </label>
+              <label class="control">
+                <span>Слой</span>
+                <input id="zIndex" type="number" min="0" max="30" step="1" value="4">
+              </label>
+            </div>
+
+            <div class="element-actions">
+              <button class="button button-ghost" id="duplicateElement" type="button">Дублировать</button>
+              <button class="button button-danger" id="deleteElement" type="button">Удалить</button>
+            </div>
+          </div>
+        </details>
+
+        <details class="panel-section" open>
+          <summary>Изображение мазка</summary>
+          <div class="panel-content">
+            <div class="brush-preview">
+              <img src="assets/brush-stroke.png" alt="Пример мазка">
+              <div>
+                <strong>Мазок под именами</strong>
+                <p>Выберите мазок в макете, чтобы изменить его размер и положение.</p>
+              </div>
+            </div>
+
+            <div class="brush-actions">
+              <button class="button button-soft" id="addBrush" type="button">+ Добавить мазок</button>
+              <label class="button button-ghost file-button">
+                Заменить изображение
+                <input id="brushUpload" type="file" accept="image/png,image/jpeg,image/webp">
+              </label>
+            </div>
+
+            <div class="brush-controls" data-brush-controls>
+              <label class="control">
+                <span>Размытие</span>
+                <input id="brushBlur" type="range" min="0" max="20" step="0.5" value="3.5">
+                <output id="brushBlurOutput">3.5px</output>
+              </label>
+              <button class="button button-danger button-full" id="deleteBrush" type="button">Удалить выбранный мазок</button>
+            </div>
+          </div>
+        </details>
+
+        <details class="panel-section" open>
+          <summary>Добавить элемент</summary>
+          <div class="panel-content">
+            <label class="control control-wide">
+              <span>В какой блок</span>
+              <select id="targetSection">
+                <option value="hero">Первый экран</option>
+                <option value="greeting">Приветствие</option>
+                <option value="program">Программа дня</option>
+                <option value="venue">Место торжества</option>
+                <option value="form">Анкета</option>
+              </select>
+            </label>
+
+            <button class="button button-soft button-full" id="addText" type="button">+ Добавить текст</button>
+
+            <span class="subheading">Цветы и веточки</span>
+            <div class="decor-grid" id="decorPalette">
+              <button type="button" data-decor-src="assets/big.png" aria-label="Добавить крупные цветы"><img src="assets/big.png" alt=""></button>
+              <button type="button" data-decor-src="assets/medium-flower.png" aria-label="Добавить цветок"><img src="assets/medium-flower.png" alt=""></button>
+              <button type="button" data-decor-src="assets/small-flowers.png" aria-label="Добавить ветку с бутонами"><img src="assets/small-flowers.png" alt=""></button>
+              <button type="button" data-decor-src="assets/small-leaves.png" aria-label="Добавить ветку с листьями"><img src="assets/small-leaves.png" alt=""></button>
+            </div>
+            <p class="hint">Добавленный декор можно перетаскивать прямо в макете.</p>
+          </div>
+        </details>
+
+        <details class="panel-section" open>
+          <summary>Фотографии места</summary>
+          <div class="panel-content">
+            <p class="hint media-intro">Добавьте фотографии ресторана. Они автоматически появятся в блоке «Место торжества».</p>
+
+            <label class="button button-soft button-full file-button">
+              + Добавить фотографии
+              <input id="venuePhotoUpload" type="file" accept="image/png,image/jpeg,image/webp" multiple>
+            </label>
+
+            <div class="media-actions">
+              <label class="button button-ghost file-button is-disabled" id="replaceVenuePhotoLabel">
+                Заменить выбранную
+                <input id="replaceVenuePhoto" type="file" accept="image/png,image/jpeg,image/webp" disabled>
+              </label>
+              <button class="button button-danger" id="deleteVenuePhoto" type="button" disabled>Удалить выбранную</button>
+            </div>
+
+            <div class="media-status" id="venuePhotoStatus">Фотографии пока не добавлены</div>
+          </div>
+        </details>
+
+        <details class="panel-section" open>
+          <summary>Ссылка на геолокацию</summary>
+          <div class="panel-content">
+            <p class="hint media-intro">Вставьте ссылку из Google Maps, Яндекс Карт или 2ГИС. На приглашении она откроется по круглой кнопке.</p>
+
+            <label class="control control-wide">
+              <span>Ссылка на место</span>
+              <input id="locationUrl" type="url" placeholder="https://maps.google.com/…" aria-describedby="locationStatus">
+            </label>
+
+            <label class="control control-wide">
+              <span>Текст кнопки</span>
+              <input id="locationButtonText" type="text" placeholder="Посмотреть на карте">
+            </label>
+
+            <div class="media-actions">
+              <button class="button button-soft" id="applyLocation" type="button">Применить ссылку</button>
+              <button class="button button-danger" id="deleteLocation" type="button">Удалить кнопку</button>
+            </div>
+
+            <div class="media-status" id="locationStatus">Ссылка будет загружена из приглашения</div>
+          </div>
+        </details>
+
+        <details class="panel-section" open>
+          <summary>Музыка приглашения</summary>
+          <div class="panel-content">
+            <p class="hint media-intro">Загрузите MP3, M4A, WAV или OGG. Страница попробует включить музыку автоматически, а при блокировке — после первого касания гостя.</p>
+
+            <label class="button button-soft button-full file-button">
+              Выбрать музыкальный файл
+              <input id="musicUpload" type="file" accept="audio/mpeg,audio/mp4,audio/x-m4a,audio/wav,audio/ogg">
+            </label>
+
+            <div class="media-file-row">
+              <span id="musicStatus">Музыка не добавлена</span>
+              <button class="button button-danger" id="deleteMusic" type="button" disabled>Удалить</button>
+            </div>
+          </div>
+        </details>
+
+        <details class="panel-section" open>
+          <summary>Конструктор анкеты</summary>
+          <div class="panel-content">
+            <label class="control control-wide">
+              <span>Текст вопроса</span>
+              <input id="questionLabel" type="text" placeholder="Например: Нужен ли трансфер?">
+            </label>
+
+            <label class="control control-wide">
+              <span>Тип ответа</span>
+              <select id="questionType">
+                <option value="text">Строка для ответа</option>
+                <option value="radio">Один вариант</option>
+                <option value="checkbox">Несколько вариантов</option>
+              </select>
+            </label>
+
+            <button class="button button-soft button-full" id="addQuestion" type="button">+ Добавить вопрос</button>
+
+            <div class="option-builder">
+              <label class="control control-wide">
+                <span>Вариант ответа</span>
+                <input id="optionLabel" type="text" placeholder="Новый вариант">
+              </label>
+              <button class="button button-ghost button-full" id="addOption" type="button">Добавить к выбранному вопросу</button>
+            </div>
+
+            <span class="subheading">Вопросы в анкете</span>
+            <div class="question-list" id="questionList"></div>
+          </div>
+        </details>
+
+        <section class="reset-section">
+          <button class="button button-danger button-full" id="resetInvitation" type="button">Сбросить все изменения</button>
+          <p>Сброс вернёт исходную версию приглашения.</p>
+        </section>
+      </aside>
+
+      <section class="preview-area" aria-label="Предпросмотр приглашения">
+        <div class="preview-toolbar">
+          <div>
+            <span class="live-dot"></span>
+            Мобильный предпросмотр · 390 × 844
+          </div>
+          <span>Кликните элемент, чтобы изменить</span>
+        </div>
+
+        <div class="device-shell">
+          <div class="device-speaker" aria-hidden="true"></div>
+          <iframe id="previewFrame" src="index.html?editorPreview=1" title="Предпросмотр свадебного приглашения"></iframe>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <dialog class="publish-dialog" id="publishDialog" aria-labelledby="publishDialogTitle">
+    <form method="dialog" class="dialog-close-form">
+      <button class="dialog-close" type="submit" aria-label="Закрыть">×</button>
+    </form>
+    <span class="publish-success-mark" aria-hidden="true">✓</span>
+    <h2 id="publishDialogTitle">Версия опубликована</h2>
+    <p>Скопируйте ссылку и отправьте её гостям. Ответы появятся в личном кабинете.</p>
+    <label class="control control-wide publish-link-field">
+      <span>Ссылка для гостей</span>
+      <input id="publishedUrl" type="url" readonly>
+    </label>
+    <div class="publish-dialog-actions">
+      <button class="button button-primary" id="copyPublishedUrl" type="button">Скопировать ссылку</button>
+      <a class="button button-ghost" id="openPublishedUrl" href="#" target="_blank" rel="noopener">Открыть</a>
+      <a class="button button-soft" href="dashboard.html">В личный кабинет</a>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="editor.js"></script>
+</body>
+</html>
